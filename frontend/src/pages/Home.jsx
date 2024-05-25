@@ -14,7 +14,28 @@ const HomeContent = styled(Stack)(({ theme }) => ({
   borderRadius: '8px',
 }));
 
-const Home = () => {
+/**
+ * Helper function to generate 4-character room code
+ * @returns 
+ */
+function generateRandomCode() {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let code = "";
+
+  for (let i = 0; i < 4; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters[randomIndex];
+  }
+
+  return code;
+}
+
+const Home = ({ socket }) => {
+  function createRoom() {
+    const roomCode = generateRandomCode();
+    socket.emit("createRoom", { roomCode });
+  }
+
   return (
     <Box
       sx={{
@@ -27,7 +48,7 @@ const Home = () => {
       <HomeContent direction='column' spacing={4}>
         <Typography variant='h2' textAlign='center'>Musikl</Typography>
         <TextField id='name' label='Name' placeholder='Enter your name' />
-        <Button variant='contained'>Create Room</Button>
+        <Button variant='contained' onClick={createRoom}>Create Room</Button>
         <Box>
           <TextField id='roomCode' label='Room Code' placeholder='Enter the invite code' sx={{ width: '100%' }}/>
           <Button variant='contained' sx={{ width: '100%' }}>Join Room</Button>
