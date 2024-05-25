@@ -4,36 +4,14 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
-
-const HomeContent = styled(Stack)(({ theme }) => ({
-  backgroundColor: theme.palette.background.light,
-  width: '100%',
-  maxWidth: '400px',
-  padding: theme.spacing(4),
-  margin: 'auto',
-  borderRadius: '8px',
-}));
-
-/**
- * Helper function to generate 4-character room code
- * @returns 
- */
-function generateRandomCode() {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let code = "";
-
-  for (let i = 0; i < 4; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    code += characters[randomIndex];
-  }
-
-  return code;
-}
+import { useNavigate } from 'react-router-dom';
 
 const Home = ({ socket }) => {
+  const navigate = useNavigate();
   function createRoom() {
     const roomCode = generateRandomCode();
     socket.emit("createRoom", { roomCode });
+    navigate(`/room/${roomCode}`);
   }
 
   return (
@@ -59,3 +37,28 @@ const Home = ({ socket }) => {
 };
 
 export default Home;
+
+/**
+ * Helper function to generate 4-character room code
+ * @returns 
+ */
+function generateRandomCode() {
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let code = "";
+
+  for (let i = 0; i < 4; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters[randomIndex];
+  }
+
+  return code;
+}
+
+const HomeContent = styled(Stack)(({ theme }) => ({
+  backgroundColor: theme.palette.background.light,
+  width: '100%',
+  maxWidth: '400px',
+  padding: theme.spacing(4),
+  margin: 'auto',
+  borderRadius: '8px',
+}));

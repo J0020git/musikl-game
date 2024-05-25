@@ -17,7 +17,7 @@ io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
 
   socket.on("createRoom", (data) => {
-    console.log(data);
+    console.log(data.roomCode);
   })
 });
 

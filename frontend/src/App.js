@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Room from "./pages/Room";
 
@@ -32,7 +32,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home socket={socket} />} />
-          <Route path="/rooms/:roomId" element={<Room socket={socket} />} />
+          <Route path="/room/:roomCode" element={<Room socket={socket} />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
