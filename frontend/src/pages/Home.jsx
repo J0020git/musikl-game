@@ -1,46 +1,87 @@
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const Home = ({ socket }) => {
   const navigate = useNavigate();
+  const [codeError, setCodeError] = useState(false);
+  const [joinDisabled, setJoinDisabled] = useState(true);
+
   function createRoom() {
     const roomCode = generateRandomCode();
     socket.emit("createRoom", { roomCode });
     navigate(`/room/${roomCode}`);
   }
 
+  const handleCodeChange = (newCode) => {
+    if (newCode.length === 4) {
+      const isValidCode = /^[A-Za-z]{4}$/.test(newCode);
+      setCodeError(!isValidCode);
+      setJoinDisabled(!isValidCode);
+    } else {
+      setCodeError(false);
+      setJoinDisabled(true);
+    }
+  };
+
   return (
     <Box
       sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
       }}
     >
-      <HomeContent direction='column' spacing={4}>
-        <Typography variant='h2' textAlign='center'>Musikl</Typography>
-        <TextField id='name' label='Name' placeholder='Enter your name' required inputProps={{ maxLength: 32 }} />
-        <Button variant='contained' onClick={createRoom}>Create Room</Button>
+      <HomeContent direction="column" spacing={4}>
+        <Typography variant="h2" textAlign="center">
+          Musikl
+        </Typography>
+        <TextField
+          id="name"
+          label="Name"
+          placeholder="Enter your name"
+          required
+          inputProps={{ maxLength: 32 }}
+        />
+        <Button variant="contained" onClick={createRoom}>
+          Create Room
+        </Button>
         <Box>
-          <TextField id='roomCode' label='Room Code' placeholder='Enter the invite code' sx={{ width: '100%' }}/>
-          <Button variant='contained' sx={{ width: '100%' }}>Join Room</Button>
+          <TextField
+            id="roomCode"
+            label="Room Code"
+            placeholder="Enter the invite code"
+            sx={{ width: "100%" }}
+            error={codeError}
+            onChange={(event) => {
+              handleCodeChange(event.target.value);
+            }}
+            inputProps={{ maxLength: 4 }}
+          />
+          <Button
+            variant="contained"
+            sx={{ width: "100%" }}
+            disabled={joinDisabled}
+          >
+            Join Room
+          </Button>
         </Box>
       </HomeContent>
     </Box>
-  )
+  );
 };
 
 export default Home;
 
 /**
  * Helper function to generate 4-character room code
- * @returns 
+ * @returns
  */
 function generateRandomCode() {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -56,9 +97,9 @@ function generateRandomCode() {
 
 const HomeContent = styled(Stack)(({ theme }) => ({
   backgroundColor: theme.palette.background.light,
-  width: '100%',
-  maxWidth: '400px',
+  width: "100%",
+  maxWidth: "400px",
   padding: theme.spacing(4),
-  margin: 'auto',
-  borderRadius: '8px',
+  margin: "auto",
+  borderRadius: "8px",
 }));
