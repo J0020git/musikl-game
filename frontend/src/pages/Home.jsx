@@ -25,7 +25,7 @@ const Home = ({ socket }) => {
     >
       <HomeContent direction='column' spacing={4}>
         <Typography variant='h2' textAlign='center'>Musikl</Typography>
-        <TextField id='name' label='Name' placeholder='Enter your name' />
+        <TextField id='name' label='Name' placeholder='Enter your name' required inputProps={{ maxLength: 32 }} />
         <Button variant='contained' onClick={createRoom}>Create Room</Button>
         <Box>
           <TextField id='roomCode' label='Room Code' placeholder='Enter the invite code' sx={{ width: '100%' }}/>
