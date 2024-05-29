@@ -7,8 +7,8 @@ const Room = ({ socket }) => {
   useEffect(() => {
     const name = localStorage.getItem("name");
     socket.emit("joinRoom", { name, roomCode });
-  }, [socket]);
-  
+  }, [socket, roomCode]);
+
   return <div>Room {roomCode}</div>;
 };
 

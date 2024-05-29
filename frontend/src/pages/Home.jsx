@@ -54,7 +54,10 @@ const Home = ({ socket }) => {
             setName(event.target.value);
             setNameError(event.target.value.trim() === "");
           }}
-          onBlur={(event) => localStorage.setItem("name", event.target.value)}
+          onBlur={(event) => {
+            const newName = event.target.value.trim();
+            newName !== "" && localStorage.setItem("name", newName);
+          }}
           error={nameError && name.length > 0}
           required
           inputProps={{ maxLength: 32 }}
