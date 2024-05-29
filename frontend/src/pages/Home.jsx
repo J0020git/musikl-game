@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 const Home = ({ socket }) => {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [nameError, setNameError] = useState(true);
   const [codeError, setCodeError] = useState(false);
   const [joinDisabled, setJoinDisabled] = useState(true);
 
@@ -24,6 +26,7 @@ const Home = ({ socket }) => {
       setCodeError(!isValidCode);
       setJoinDisabled(!isValidCode);
     } else {
+      // Only show a code error when 4 characters are typed
       setCodeError(false);
       setJoinDisabled(true);
     }
@@ -46,10 +49,15 @@ const Home = ({ socket }) => {
           id="name"
           label="Name"
           placeholder="Enter your name"
+          onChange={(event) => {
+            setName(event.target.value);
+            setNameError(event.target.value.trim() === "");
+          }}
+          error={nameError && name.length > 0}
           required
           inputProps={{ maxLength: 32 }}
         />
-        <Button variant="contained" onClick={createRoom}>
+        <Button variant="contained" onClick={createRoom} disabled={nameError}>
           Create Room
         </Button>
         <Box>
@@ -58,6 +66,7 @@ const Home = ({ socket }) => {
             label="Room Code"
             placeholder="Enter the invite code"
             sx={{ width: "100%" }}
+            disabled={nameError}
             error={codeError}
             onChange={(event) => {
               handleCodeChange(event.target.value);
@@ -67,7 +76,7 @@ const Home = ({ socket }) => {
           <Button
             variant="contained"
             sx={{ width: "100%" }}
-            disabled={joinDisabled}
+            disabled={joinDisabled || nameError}
           >
             Join Room
           </Button>
