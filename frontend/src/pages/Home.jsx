@@ -9,14 +9,14 @@ import { useNavigate } from "react-router-dom";
 
 const Home = ({ socket }) => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [nameError, setNameError] = useState(true);
+  const [name, setName] = useState(localStorage.getItem("name") ? localStorage.getItem("name") : "");
+  const [nameError, setNameError] = useState(name.trim() === "");
   const [codeError, setCodeError] = useState(false);
   const [joinDisabled, setJoinDisabled] = useState(true);
 
   function createRoom() {
     const roomCode = generateRandomCode();
-    socket.emit("createRoom", { roomCode });
+    localStorage.setItem("name", name);
     navigate(`/room/${roomCode}`);
   }
 
@@ -49,10 +49,12 @@ const Home = ({ socket }) => {
           id="name"
           label="Name"
           placeholder="Enter your name"
+          defaultValue={name}
           onChange={(event) => {
             setName(event.target.value);
             setNameError(event.target.value.trim() === "");
           }}
+          onBlur={(event) => localStorage.setItem("name", event.target.value)}
           error={nameError && name.length > 0}
           required
           inputProps={{ maxLength: 32 }}

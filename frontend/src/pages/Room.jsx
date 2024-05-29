@@ -1,12 +1,15 @@
-import { useParams } from 'react-router-dom';
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-const Room = () => {
+const Room = ({ socket }) => {
   const { roomCode } = useParams();
 
-    return (
-      <div>Room {roomCode}</div>
-    )
-  };
+  useEffect(() => {
+    const name = localStorage.getItem("name");
+    socket.emit("joinRoom", { name, roomCode });
+  }, [socket]);
   
-  export default Room;
-  
+  return <div>Room {roomCode}</div>;
+};
+
+export default Room;
