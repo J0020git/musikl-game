@@ -110,7 +110,7 @@ function generateRandomCode() {
 }
 
 const HomeContent = styled(Stack)(({ theme }) => ({
-  backgroundColor: theme.palette.background.light,
+  backgroundColor: theme.palette.background.level1,
   width: "100%",
   maxWidth: "400px",
   padding: theme.spacing(4),

@@ -20,8 +20,13 @@ const darkTheme = createTheme({
     },
     background: {
       default: "#000000",
-      light: "#121212",
+      level1: "#121212",
+      level2: "#242424",
     },
+    text: {
+      primary: "#FFFFFF",
+      secondary: "#A7A7A7",
+    }
   },
 });
 
