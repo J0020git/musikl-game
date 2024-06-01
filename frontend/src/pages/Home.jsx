@@ -11,11 +11,11 @@ const Home = ({ socket }) => {
   const navigate = useNavigate();
   const [name, setName] = useState(localStorage.getItem("name") ? localStorage.getItem("name") : "");
   const [nameError, setNameError] = useState(name.trim() === "");
+  const [code, setCode] = useState("");
   const [codeError, setCodeError] = useState(false);
   const [joinDisabled, setJoinDisabled] = useState(true);
 
-  function createRoom() {
-    const roomCode = generateRandomCode();
+  function joinRoom(roomCode) {
     localStorage.setItem("name", name);
     navigate(`/room/${roomCode}`);
   }
@@ -23,6 +23,7 @@ const Home = ({ socket }) => {
   const handleCodeChange = (newCode) => {
     if (newCode.length === 4) {
       const isValidCode = /^[A-Za-z]{4}$/.test(newCode);
+      if (isValidCode) setCode(newCode.toUpperCase());
       setCodeError(!isValidCode);
       setJoinDisabled(!isValidCode);
     } else {
@@ -62,7 +63,7 @@ const Home = ({ socket }) => {
           required
           inputProps={{ maxLength: 32 }}
         />
-        <Button variant="contained" onClick={createRoom} disabled={nameError}>
+        <Button variant="contained" onClick={() => joinRoom(generateRandomCode())} disabled={nameError}>
           Create Room
         </Button>
         <Box>
@@ -82,6 +83,7 @@ const Home = ({ socket }) => {
             variant="contained"
             sx={{ width: "100%" }}
             disabled={joinDisabled || nameError}
+            onClick={() => joinRoom(code)}
           >
             Join Room
           </Button>
