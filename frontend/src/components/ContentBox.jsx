@@ -11,8 +11,6 @@ const ContentBox = ({ sx, ...props }) => {
         padding: theme.spacing(2),
         height: "100%",
         borderRadius: "8px",
-        flexBasis: "0",
-        flexGrow: props.size,
         ...sx,
       }}
       {...props}

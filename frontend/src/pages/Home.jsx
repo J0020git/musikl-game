@@ -17,6 +17,7 @@ const Home = ({ socket }) => {
 
   function joinRoom(roomCode) {
     localStorage.setItem("name", name);
+    socket.emit("joinRoom", { name, roomCode });
     navigate(`/room/${roomCode}`);
   }
 

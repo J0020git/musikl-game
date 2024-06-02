@@ -1,18 +1,13 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/system";
 
 import ContentBox from "../components/ContentBox";
+import Chat from "../components/Chat";
 
 const Room = ({ socket }) => {
   const { roomCode } = useParams();
-
-  useEffect(() => {
-    const name = localStorage.getItem("name");
-    socket.emit("joinRoom", { name, roomCode });
-  }, [socket, roomCode]);
 
   return (
     <RoomStack
@@ -21,13 +16,15 @@ const Room = ({ socket }) => {
       alignItems="flex-start"
       spacing={1}
     >
-      <ContentBox size={1}>
+      <ContentBox sx={{ width: "28%" }}>
         <Typography variant="caption" color="text.secondary">Room Code</Typography>
         <Typography variant="h3">{roomCode}</Typography>
         Player List
       </ContentBox>
-      <ContentBox size={2}>Game Screen</ContentBox>
-      <ContentBox size={1}>Chat</ContentBox>
+      <ContentBox sx={{ width: "44%" }}>Game Screen</ContentBox>
+      <ContentBox sx={{ width: "28%" }}>
+        <Chat socket={socket} room={roomCode} username={localStorage.getItem("name")}/>
+      </ContentBox>
     </RoomStack>
   );
 };

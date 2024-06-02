@@ -28,6 +28,23 @@ const darkTheme = createTheme({
       secondary: "#A7A7A7",
     }
   },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: (theme) => ({
+        '::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '::-webkit-scrollbar-track': {
+          backgroundColor: theme.palette.background.level2,
+        },
+        '::-webkit-scrollbar-thumb': {
+          backgroundImage: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+          borderRadius: '2px',
+        },
+      }),
+    },
+  },
+
 });
 
 function App() {
