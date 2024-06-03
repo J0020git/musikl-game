@@ -5,9 +5,31 @@ import { styled } from "@mui/system";
 
 import ContentBox from "../components/ContentBox";
 import Chat from "../components/Chat";
+import { useEffect, useState } from "react";
 
-const Room = ({ socket }) => {
+const Room = ({ socket, name }) => {
   const { roomCode } = useParams();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    if (name === "") {
+      alert("No name!");
+    } else {
+      socket.emit("joinRoom", { name, roomCode });
+    }
+  }, []);
+
+  useEffect(() => {
+    function updateUsers(usersData) {
+      setUsers(usersData.users);
+    }
+
+    socket.on("updateUsers", updateUsers);
+
+    return () => {
+      socket.off("updateUsers", updateUsers);
+    };
+  }, [socket]);
 
   return (
     <RoomStack
@@ -19,11 +41,17 @@ const Room = ({ socket }) => {
       <ContentBox sx={{ width: "28%" }}>
         <Typography variant="caption" color="text.secondary">Room Code</Typography>
         <Typography variant="h3">{roomCode}</Typography>
-        Player List
+        {users.map((user, index) => {
+          return (
+            <p key={index}>
+              {user.name}
+            </p>
+          );
+        })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>Game Screen</ContentBox>
       <ContentBox sx={{ width: "28%" }}>
-        <Chat socket={socket} room={roomCode} username={localStorage.getItem("name")}/>
+        <Chat socket={socket} name={name}/>
       </ContentBox>
     </RoomStack>
   );

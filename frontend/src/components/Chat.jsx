@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
-const Chat = ({ socket, username }) => {
+const Chat = ({ socket, name }) => {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const messageListRef = useRef(null);
@@ -13,7 +13,7 @@ const Chat = ({ socket, username }) => {
       setMessage("");
       return;
     }
-    await socket.emit("sendMessage", { message, author: username });
+    await socket.emit("sendMessage", { message, author: name });
     setMessage("");
   }
 
@@ -24,9 +24,8 @@ const Chat = ({ socket, username }) => {
   useEffect(() => {
     socket.on("receiveMessage", receiveMessage);
 
-    // Cleanup function to remove socket event listeners
     return () => {
-      socket.removeAllListeners();
+      socket.off("receiveMessage", receiveMessage);
     };
   }, [socket]);
 

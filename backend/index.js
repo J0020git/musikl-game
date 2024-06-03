@@ -39,13 +39,34 @@ io.on("connection", (socket) => {
 
     // Add user to user state in new room
     const user = userActivate(socket.id, name, roomCode);
+
+    // Cannot update previous room users list until after the state update in activate user
+    if (prevRoom) {
+      io.to(prevRoom).emit("updateUsers", {
+        users: getUsersInRoom(prevRoom),
+      });
+    }
+
     // Join new room
     socket.join(user.room);
     console.log(`${user.name} (${user.id}) has joined room: ${user.room}`);
+
+    // Update user list for room
+    io.to(user.room).emit("updateUsers", {
+      users: getUsersInRoom(user.room),
+    });
   });
 
   socket.on("disconnect", () => {
+    const user = getUser(socket.id);
     userLeave(socket.id);
+
+    if (user) {
+      io.to(user.room).emit("updateUsers", {
+        users: getUsersInRoom(user.room),
+      });
+    }
+
     console.log(`User ${socket.id} disconnected`);
   });
 

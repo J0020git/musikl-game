@@ -7,9 +7,8 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 
-const Home = ({ socket }) => {
+const Home = ({ name, setName }) => {
   const navigate = useNavigate();
-  const [name, setName] = useState(localStorage.getItem("name") ? localStorage.getItem("name") : "");
   const [nameError, setNameError] = useState(name.trim() === "");
   const [code, setCode] = useState("");
   const [codeError, setCodeError] = useState(false);
@@ -17,7 +16,6 @@ const Home = ({ socket }) => {
 
   function joinRoom(roomCode) {
     localStorage.setItem("name", name);
-    socket.emit("joinRoom", { name, roomCode });
     navigate(`/room/${roomCode}`);
   }
 
