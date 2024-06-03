@@ -5,6 +5,7 @@ import { styled } from "@mui/system";
 
 import ContentBox from "../components/ContentBox";
 import Chat from "../components/Chat";
+import GameSettings from "../components/GameSettings";
 import { useEffect, useState } from "react";
 
 const Room = ({ socket, name }) => {
@@ -49,7 +50,9 @@ const Room = ({ socket, name }) => {
           );
         })}
       </ContentBox>
-      <ContentBox sx={{ width: "44%" }}>Game Screen</ContentBox>
+      <ContentBox sx={{ width: "44%" }}>
+        <GameSettings socket={socket} />
+      </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name}/>
       </ContentBox>

@@ -76,6 +76,13 @@ io.on("connection", (socket) => {
       io.to(room).emit("receiveMessage", data);
     }
   });
+
+  socket.on("sendPlaylist", (data) => {
+    const room = getUser(socket.id)?.room;
+    if (room) {
+      io.to(room).emit("receivePlaylist", data);
+    }
+  });
 });
 
 // User functions
