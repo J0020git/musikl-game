@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material';
 
 import PlaylistTypography from "./PlaylistTypography";
 import PlaylistCover from "./PlaylistCover";
+import PlaylistTracklist from "./PlaylistTracklist";
 
 const PlaylistCard = ({ playlistDetails }) => {
   const theme = useTheme();
@@ -34,8 +35,8 @@ const PlaylistCard = ({ playlistDetails }) => {
           </Box>
         </Stack>
       </CardContent>
-      <CardContent sx={{ backgroundColor: theme.palette.background.level2 }}>
-        Text
+      <CardContent sx={{ backgroundColor: theme.palette.background.level2, height: "16rem" }}>
+        <PlaylistTracklist tracklist={playlistDetails.tracks} />
       </CardContent>
     </Card>
   );

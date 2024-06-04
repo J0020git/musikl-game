@@ -32,11 +32,23 @@ const GameSettings = ({ socket }) => {
         return doc.documentElement.textContent;
       }
 
+      const tracks = playlistData.tracks.items
+        // Filter only tracks with type="track" and isLocal=false
+        .filter(trackObj => trackObj.track.type === "track" && !trackObj.track.isLocal)
+        // Map each track to a simplified object
+        .map(trackObj => ({
+          id: trackObj.track.id,
+          name: trackObj.track.name,
+          artists: trackObj.track.artists.map(artist => artist.name),
+          previewUrl: trackObj.track.preview_url
+        }));
+
       const playlistDetails = {
         playlistId: playlistData.id,
         name: decodeHtmlEntities(playlistData.name),
         description: decodeHtmlEntities(playlistData.description),
         img: playlistData.images[0].url,
+        tracks,
       }
       setCurrentPlaylist(playlistDetails)
     }
