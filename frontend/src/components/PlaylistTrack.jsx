@@ -14,8 +14,8 @@ const PlaylistTrack = ({ number, trackDetails }) => {
     >
       <Typography color="text.secondary" sx={{ width: "1.5em" }}>{number}</Typography>
       <Box sx={{ width: "100%", margin: "0px" }}>
-        <PlaylistTypography lines={1}>{trackDetails.name}</PlaylistTypography>
-        <PlaylistTypography lines={1} color="text.secondary">{trackDetails.artists.join(", ")}</PlaylistTypography>
+        <PlaylistTypography variant="body1" lines={1}>{trackDetails.name}</PlaylistTypography>
+        <PlaylistTypography variant="body1" lines={1} color="text.secondary">{trackDetails.artists.join(", ")}</PlaylistTypography>
       </Box>
     </Stack>
   );

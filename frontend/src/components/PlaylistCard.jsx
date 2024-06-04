@@ -29,7 +29,7 @@ const PlaylistCard = ({ playlistDetails }) => {
             <PlaylistTypography variant="h4" lines={2} sx={{ fontWeight: "600", width: "100%" }}>
               {playlistDetails.name}
             </PlaylistTypography>
-            <PlaylistTypography variant="caption" color="text.secondary" lines={2} sx={{ width: "100%" }}>
+            <PlaylistTypography variant="body1" color="text.secondary" lines={2} sx={{ width: "100%" }}>
               {playlistDetails.description}
             </PlaylistTypography>
           </Box>
