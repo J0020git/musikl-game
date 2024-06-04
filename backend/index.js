@@ -4,6 +4,8 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
+const { getPlaylistDetails } = require("./spotify.js");
+
 app.use(cors());
 
 const PORT = 3001;
@@ -77,10 +79,16 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendPlaylist", (data) => {
+  socket.on("sendPlaylist", async (data) => {
     const room = getUser(socket.id)?.room;
     if (room) {
-      io.to(room).emit("receivePlaylist", data);
+      const playlistId = data.playlistId;
+      try {
+        const playlistDetails = await getPlaylistDetails(playlistId);
+        io.to(room).emit("receivePlaylist", playlistDetails);
+      } catch (error) {
+        socket.emit('receivePlaylist', {})
+      }
     }
   });
 });

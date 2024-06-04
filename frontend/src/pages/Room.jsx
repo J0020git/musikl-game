@@ -18,7 +18,7 @@ const Room = ({ socket, name }) => {
     } else {
       socket.emit("joinRoom", { name, roomCode });
     }
-  }, []);
+  }, [socket, name, roomCode]);
 
   useEffect(() => {
     function updateUsers(usersData) {
