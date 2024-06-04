@@ -11,6 +11,7 @@ const ContentBox = ({ sx, ...props }) => {
         padding: theme.spacing(2),
         height: "100%",
         borderRadius: "8px",
+        overflow: "hidden",
         ...sx,
       }}
       {...props}

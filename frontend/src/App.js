@@ -23,6 +23,7 @@ const darkTheme = createTheme({
       default: "#000000",
       level1: "#121212",
       level2: "#242424",
+      level3: "#363636",
     },
     text: {
       primary: "#FFFFFF",

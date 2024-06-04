@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 import { useState, useEffect } from "react";
-import PlaylistPreview from "./PlaylistPreview";
+import PlaylistCard from "./PlaylistCard";
 
 const GameSettings = ({ socket }) => {
   const [playlist, setPlaylist] = useState("");
@@ -63,7 +63,7 @@ const GameSettings = ({ socket }) => {
         />
         <Button variant="contained" disabled={loading} onClick={sendPlaylist}>Set</Button>
       </Stack>
-      {JSON.stringify(currentPlaylist) !== "{}" ? <PlaylistPreview playlistDetails={currentPlaylist} /> : <p>Preview</p>}
+      {JSON.stringify(currentPlaylist) !== "{}" ? <PlaylistCard playlistDetails={currentPlaylist} /> : <></>}
     </Box>
   );
 };
