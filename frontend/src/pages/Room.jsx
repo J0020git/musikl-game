@@ -6,17 +6,21 @@ import { styled } from "@mui/system";
 import ContentBox from "../components/ContentBox";
 import Chat from "../components/Chat";
 import GameSettings from "../components/GameSettings";
+import Name from "./Name";
+
 import { useEffect, useState } from "react";
 
-const Room = ({ socket, name }) => {
+const Room = ({ socket, name, setName }) => {
   const { roomCode } = useParams();
   const [users, setUsers] = useState([]);
+  const [noName, setNoName] = useState(false);
 
   useEffect(() => {
     if (name === "") {
-      alert("No name!");
+      setNoName(true);
     } else {
       socket.emit("joinRoom", { name, roomCode });
+      setNoName(false);
     }
   }, [socket, name, roomCode]);
 
@@ -32,7 +36,7 @@ const Room = ({ socket, name }) => {
     };
   }, [socket]);
 
-  return (
+  return (noName ? <Name setName={setName} /> :
     <RoomStack
       direction="row"
       justifyContent="center"
@@ -54,7 +58,7 @@ const Room = ({ socket, name }) => {
         <GameSettings socket={socket} />
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
-        <Chat socket={socket} name={name}/>
+        <Chat socket={socket} name={name} />
       </ContentBox>
     </RoomStack>
   );

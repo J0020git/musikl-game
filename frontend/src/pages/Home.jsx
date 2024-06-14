@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { styled } from "@mui/system";
-import { useNavigate } from "react-router-dom";
+
+import ContentStack from "../components/ContentStack";
 
 const Home = ({ name, setName }) => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Home = ({ name, setName }) => {
         height: "100vh",
       }}
     >
-      <HomeContent direction="column" spacing={4}>
+      <ContentStack direction="column" spacing={4}>
         <Typography variant="h2" textAlign="center">
           Musikl
         </Typography>
@@ -51,7 +52,7 @@ const Home = ({ name, setName }) => {
           placeholder="Enter your name"
           defaultValue={name}
           onChange={(event) => {
-            setName(event.target.value);
+            setName(event.target.value.trim());
             setNameError(event.target.value.trim() === "");
           }}
           onBlur={(event) => {
@@ -73,6 +74,7 @@ const Home = ({ name, setName }) => {
             sx={{ width: "100%" }}
             disabled={nameError}
             error={codeError}
+            defaultValue={code}
             onChange={(event) => {
               handleCodeChange(event.target.value);
             }}
@@ -87,7 +89,7 @@ const Home = ({ name, setName }) => {
             Join Room
           </Button>
         </Box>
-      </HomeContent>
+      </ContentStack>
     </Box>
   );
 };
@@ -109,12 +111,3 @@ function generateRandomCode() {
 
   return code;
 }
-
-const HomeContent = styled(Stack)(({ theme }) => ({
-  backgroundColor: theme.palette.background.level1,
-  width: "100%",
-  maxWidth: "400px",
-  padding: theme.spacing(4),
-  margin: "auto",
-  borderRadius: "8px",
-}));

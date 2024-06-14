@@ -57,8 +57,8 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home name={name} setName={setName}/>} />
-          <Route path="/room/:roomCode" element={<Room socket={socket} name={name}/>} />
+          <Route path="/" element={<Home name={name} setName={setName} />} />
+          <Route path="/room/:roomCode" element={<Room socket={socket} name={name} setName={setName} />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
