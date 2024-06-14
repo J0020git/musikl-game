@@ -21,6 +21,17 @@ const UsersState = {
   },
 };
 
+// All rooms
+const RoomsState = {
+  rooms: [],
+  setRooms: function (newRoomsArray) {
+    this.rooms = newRoomsArray;
+  },
+  getRoom: function (roomCode) {
+    return this.rooms.find(room => room.roomCode === roomCode);
+  },
+};
+
 const io = new Server(expressServer, {
   cors: {
     origin: "http://localhost:3000",
@@ -39,6 +50,10 @@ io.on("connection", (socket) => {
       console.log(`${name} left room: ${prevRoom}`);
     }
 
+    if (!isRoomActive(roomCode)) {
+      roomActivate(roomCode);
+    }
+
     // Add user to user state in new room
     const user = userActivate(socket.id, name, roomCode);
 
@@ -52,6 +67,8 @@ io.on("connection", (socket) => {
     // Join new room
     socket.join(user.room);
     console.log(`${user.name} (${user.id}) has joined room: ${user.room}`);
+    socket.emit('receivePlaylist', RoomsState.getRoom(user.room).playlistDetails);
+
 
     // Update user list for room
     io.to(user.room).emit("updateUsers", {
@@ -67,6 +84,10 @@ io.on("connection", (socket) => {
       io.to(user.room).emit("updateUsers", {
         users: getUsersInRoom(user.room),
       });
+
+      if (!isRoomActive(user.room)) {
+        roomDeactivate(user.room)
+      }
     }
 
     console.log(`User ${socket.id} disconnected`);
@@ -85,6 +106,7 @@ io.on("connection", (socket) => {
       const playlistId = data.playlistId;
       try {
         const playlistDetails = await getPlaylistDetails(playlistId);
+        updateRoomDetails(room, { playlistDetails })
         io.to(room).emit("receivePlaylist", playlistDetails);
       } catch (error) {
         socket.emit('receivePlaylist', {})
@@ -117,4 +139,31 @@ function getUsersInRoom(room) {
 
 function getAllActiveRooms() {
   return Array.from(new Set(UsersState.users.map((user) => user.room)));
+}
+
+function roomActivate(roomCode) {
+  const room = { roomCode, playlistDetails: {}, gameActive: false };
+  RoomsState.setRooms([
+    ...RoomsState.rooms.filter((room) => room.roomCode !== roomCode),
+    room,
+  ]);
+  return room;
+}
+
+function roomDeactivate(roomCode) {
+  RoomsState.setRooms(RoomsState.rooms.filter((room) => room.roomCode !== roomCode));
+}
+
+function isRoomActive(roomCode) {
+  return getAllActiveRooms().includes(roomCode);
+}
+
+function updateRoomDetails(roomCode, updatedDetails) {
+  const updatedRooms = RoomsState.rooms.map(room => {
+    if (room.roomCode === roomCode) {
+      return { ...room, ...updatedDetails };
+    }
+    return room;
+  });
+  RoomsState.setRooms(updatedRooms);
 }

@@ -39,7 +39,29 @@ async function getPlaylistDetails(playlistId) {
       },
     });
 
-    return response.data;
+    const playlistData = response.data;
+    const he = require('he');
+
+    const tracks = playlistData.tracks.items
+      // Filter only tracks with type="track" and isLocal=false
+      .filter(trackObj => trackObj.track.type === "track" && !trackObj.track.isLocal)
+      // Map each track to a simplified object
+      .map(trackObj => ({
+        id: trackObj.track.id,
+        name: trackObj.track.name,
+        artists: trackObj.track.artists.map(artist => artist.name),
+        previewUrl: trackObj.track.preview_url
+      }));
+
+    const playlistDetails = {
+      playlistId: playlistData.id,
+      name: he.decode(playlistData.name),
+      description: he.decode(playlistData.description),
+      img: playlistData.images[0].url,
+      tracks,
+    }
+
+    return playlistDetails
   } catch (error) {
     console.error("Error getting playlist details", error.code);
     throw error;

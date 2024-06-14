@@ -26,31 +26,7 @@ const GameSettings = ({ socket }) => {
 
   function receivePlaylist(playlistData) {
     if (JSON.stringify(playlistData) !== "{}") {
-      function decodeHtmlEntities(str) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(str, 'text/html');
-        return doc.documentElement.textContent;
-      }
-
-      const tracks = playlistData.tracks.items
-        // Filter only tracks with type="track" and isLocal=false
-        .filter(trackObj => trackObj.track.type === "track" && !trackObj.track.isLocal)
-        // Map each track to a simplified object
-        .map(trackObj => ({
-          id: trackObj.track.id,
-          name: trackObj.track.name,
-          artists: trackObj.track.artists.map(artist => artist.name),
-          previewUrl: trackObj.track.preview_url
-        }));
-
-      const playlistDetails = {
-        playlistId: playlistData.id,
-        name: decodeHtmlEntities(playlistData.name),
-        description: decodeHtmlEntities(playlistData.description),
-        img: playlistData.images[0].url,
-        tracks,
-      }
-      setCurrentPlaylist(playlistDetails)
+      setCurrentPlaylist(playlistData)
     }
     setLoading(false);
   }
@@ -71,6 +47,7 @@ const GameSettings = ({ socket }) => {
         <TextField label="Playlist" variant="outlined" size="small" fullWidth
           disabled={loading}
           value={playlist}
+          placeholder="https://open.spotify.com/playlist/..."
           onChange={(event) => setPlaylist(event.target.value)}
         />
         <Button variant="contained" disabled={loading} onClick={sendPlaylist}>Set</Button>
