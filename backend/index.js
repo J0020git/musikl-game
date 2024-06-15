@@ -113,6 +113,15 @@ io.on("connection", (socket) => {
       }
     }
   });
+
+  socket.on("sendGameActive", (data) => {
+    const room = getUser(socket.id)?.room;
+    const gameActive = data.gameActive;
+    if (room) {
+      updateRoomDetails(room, { gameActive })
+      io.to(room).emit("receiveGameActive", gameActive);
+    }
+  });
 });
 
 // User functions

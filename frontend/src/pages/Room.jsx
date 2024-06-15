@@ -30,13 +30,27 @@ const Room = ({ socket, name, setName }) => {
     function updateUsers(usersData) {
       setUsers(usersData.users);
     }
+    function updateGameActive(gameActiveData) {
+      setGameActive(gameActiveData)
+    }
 
     socket.on("updateUsers", updateUsers);
+    socket.on("receiveGameActive", updateGameActive);
 
     return () => {
       socket.off("updateUsers", updateUsers);
+      socket.off("receiveGameActive", updateGameActive);
     };
   }, [socket]);
+
+  function startGame() {
+    setGameActive(true);
+    socket.emit("sendGameActive", { gameActive: true })
+  }
+
+  function stopGame() {
+    setGameActive(false)
+  }
 
   return (noName ? <Name setName={setName} /> :
     <RoomStack
@@ -57,7 +71,7 @@ const Room = ({ socket, name, setName }) => {
         })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>
-        {gameActive ? <GamePlay stopGame={() => setGameActive(false)} /> : <GameSettings socket={socket} startGame={() => setGameActive(true)} />}
+        {gameActive ? <GamePlay stopGame={stopGame} /> : <GameSettings socket={socket} startGame={startGame} />}
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name} />

@@ -18,7 +18,6 @@ const GameSettings = ({ socket, startGame }) => {
   const [playlist, setPlaylist] = useState("");
   const [currentPlaylist, setCurrentPlaylist] = useState({});
   const [loading, setLoading] = useState(false);
-  const [settingsError, setSettingsError] = useState(true);
 
   async function sendPlaylist() {
     if (playlist.trim() === "") {
