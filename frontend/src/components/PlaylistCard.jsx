@@ -18,14 +18,13 @@ const PlaylistCard = ({ playlistDetails }) => {
           direction="row"
           justifyContent="center"
           alignItems="center"
-          spacing={1}
         >
           <PlaylistCover
             src={playlistDetails.img}
             alt="playlist cover"
             size="30%"
           />
-          <Box sx={{ width: "70%" }}>
+          <Box sx={{ width: "70%", px: 1 }}>
             <PlaylistTypography variant="h4" lines={2} sx={{ fontWeight: "600", width: "100%" }}>
               {playlistDetails.name}
             </PlaylistTypography>

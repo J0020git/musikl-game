@@ -6,6 +6,7 @@ import { styled } from "@mui/system";
 import ContentBox from "../components/ContentBox";
 import Chat from "../components/Chat";
 import GameSettings from "../components/GameSettings";
+import GamePlay from "../components/GamePlay";
 import Name from "./Name";
 
 import { useEffect, useState } from "react";
@@ -14,6 +15,7 @@ const Room = ({ socket, name, setName }) => {
   const { roomCode } = useParams();
   const [users, setUsers] = useState([]);
   const [noName, setNoName] = useState(false);
+  const [gameActive, setGameActive] = useState(false);
 
   useEffect(() => {
     if (name === "") {
@@ -55,7 +57,7 @@ const Room = ({ socket, name, setName }) => {
         })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>
-        <GameSettings socket={socket} />
+        {gameActive ? <GamePlay stopGame={() => setGameActive(false)} /> : <GameSettings socket={socket} startGame={() => setGameActive(true)} />}
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name} />
