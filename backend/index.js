@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const { getPlaylistDetails } = require("./spotify.js");
+const { shuffleArray, startGame } = require("./game.js")
 
 app.use(cors());
 
@@ -114,12 +115,20 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendGameActive", (data) => {
+  socket.on("sendGameStart", (data) => {
     const room = getUser(socket.id)?.room;
-    const gameActive = data.gameActive;
     if (room) {
-      updateRoomDetails(room, { gameActive })
-      io.to(room).emit("receiveGameActive", gameActive);
+      const roomDetails = getRoom(room);
+      
+      let shuffledPlaylist = roomDetails.playlistDetails.tracks.slice(0);
+      shuffleArray(shuffledPlaylist);
+      shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.rounds, shuffledPlaylist.length));
+      updateRoomDetails(room, { gameActive: true, gamePlaylist: shuffledPlaylist });
+      startGame(room);
+      io.to(room).emit("receiveGameStart", { gamePlaylist: shuffledPlaylist });
+
+      // TO BE REMOVED: System sends shuffled playlist names
+      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(shuffledPlaylist.map((track) => track.name))});
     }
   });
 });
@@ -151,7 +160,16 @@ function getAllActiveRooms() {
 }
 
 function roomActivate(roomCode) {
-  const room = { roomCode, playlistDetails: {}, gameActive: false };
+  const room = {
+    roomCode,
+    playlistDetails: {},
+    gameActive: false,
+    gameSettings: {
+      guessTime: 5,
+      rounds: 5,
+    },
+    gamePlaylist: [],
+  };
   RoomsState.setRooms([
     ...RoomsState.rooms.filter((room) => room.roomCode !== roomCode),
     room,
@@ -161,6 +179,10 @@ function roomActivate(roomCode) {
 
 function roomDeactivate(roomCode) {
   RoomsState.setRooms(RoomsState.rooms.filter((room) => room.roomCode !== roomCode));
+}
+
+function getRoom(roomCode) {
+  return RoomsState.rooms.find((room) => room.roomCode === roomCode);
 }
 
 function isRoomActive(roomCode) {

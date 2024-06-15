@@ -30,22 +30,23 @@ const Room = ({ socket, name, setName }) => {
     function updateUsers(usersData) {
       setUsers(usersData.users);
     }
-    function updateGameActive(gameActiveData) {
-      setGameActive(gameActiveData)
+    function receiveGameStart(gameData) {
+      setGameActive(true);
+      console.log(gameData.gamePlaylist);
     }
 
     socket.on("updateUsers", updateUsers);
-    socket.on("receiveGameActive", updateGameActive);
+    socket.on("receiveGameStart", receiveGameStart);
 
     return () => {
       socket.off("updateUsers", updateUsers);
-      socket.off("receiveGameActive", updateGameActive);
+      socket.off("receiveGameStart", receiveGameStart);
     };
   }, [socket]);
 
   function startGame() {
     setGameActive(true);
-    socket.emit("sendGameActive", { gameActive: true })
+    socket.emit("sendGameStart", { gameActive: true })
   }
 
   function stopGame() {
