@@ -30,9 +30,8 @@ const Room = ({ socket, name, setName }) => {
     function updateUsers(usersData) {
       setUsers(usersData.users);
     }
-    function receiveGameStart(gameData) {
+    function receiveGameStart() {
       setGameActive(true);
-      console.log(gameData.gamePlaylist);
     }
 
     socket.on("updateUsers", updateUsers);
@@ -46,7 +45,7 @@ const Room = ({ socket, name, setName }) => {
 
   function startGame() {
     setGameActive(true);
-    socket.emit("sendGameStart", { gameActive: true })
+    socket.emit("sendGameStart")
   }
 
   function stopGame() {

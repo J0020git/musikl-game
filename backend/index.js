@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const { getPlaylistDetails } = require("./spotify.js");
-const { shuffleArray, startGame } = require("./game.js")
+const { shuffleArray, createGame } = require("./game.js")
 
 app.use(cors());
 
@@ -115,20 +115,21 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendGameStart", (data) => {
+  socket.on("sendGameStart", () => {
     const room = getUser(socket.id)?.room;
     if (room) {
       const roomDetails = getRoom(room);
       
       let shuffledPlaylist = roomDetails.playlistDetails.tracks.slice(0);
       shuffleArray(shuffledPlaylist);
-      shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.rounds, shuffledPlaylist.length));
+      shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.roundsMax, shuffledPlaylist.length));
       updateRoomDetails(room, { gameActive: true, gamePlaylist: shuffledPlaylist });
-      startGame(room);
-      io.to(room).emit("receiveGameStart", { gamePlaylist: shuffledPlaylist });
+      const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
+      io.to(room).emit("receiveGameStart");
 
-      // TO BE REMOVED: System sends shuffled playlist names
+      // TO BE REMOVED: System sends game details
       io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(shuffledPlaylist.map((track) => track.name))});
+      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});
     }
   });
 });
@@ -162,11 +163,18 @@ function getAllActiveRooms() {
 function roomActivate(roomCode) {
   const room = {
     roomCode,
-    playlistDetails: {},
+    playlistDetails: {
+      // playlistId:
+      // name:
+      // description:
+      // img:
+      // tracks: []
+    },
     gameActive: false,
     gameSettings: {
+      playDuration: 5,
       guessTime: 5,
-      rounds: 5,
+      roundsMax: 5,
     },
     gamePlaylist: [],
   };

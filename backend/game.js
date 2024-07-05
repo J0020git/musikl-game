@@ -5,11 +5,20 @@ function shuffleArray(array) {
   }
 }
 
-function startGame(roomCode) {
-  console.log(roomCode);
+function createGame(roomCode, gamePlaylist, gameSettings) {
+  const game = {
+    roomCode,
+    gamePlaylist,
+    playDuration: gameSettings.playDuration,
+    guessTime: gameSettings.guessTime,
+    roundsTotal: gamePlaylist.length,
+    round: 1,
+  }
+
+  return game
 }
 
 module.exports = {
   shuffleArray,
-  startGame,
+  createGame,
 };
