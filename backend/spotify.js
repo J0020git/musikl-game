@@ -1,8 +1,5 @@
 const axios = require("axios");
-
-const clientId = "79f704fc81fc4ae09ceb390dbd6b54ac";
-const clientSecret = "eb8ccbe8db9843b5b0bac00bf97a7df0";
-const baseURL = "https://api.spotify.com/v1";
+const { clientId, clientSecret, baseURL } = require('./config');
 
 const authOptions = {
   url: "https://accounts.spotify.com/api/token",
