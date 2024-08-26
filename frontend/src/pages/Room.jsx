@@ -16,6 +16,7 @@ const Room = ({ socket, name, setName }) => {
   const [users, setUsers] = useState([]);
   const [noName, setNoName] = useState(false);
   const [gameActive, setGameActive] = useState(false);
+  const [timerEnd, setTimerEnd] = useState(0);
 
   useEffect(() => {
     if (name === "") {
@@ -30,7 +31,8 @@ const Room = ({ socket, name, setName }) => {
     function updateUsers(usersData) {
       setUsers(usersData.users);
     }
-    function receiveGameStart() {
+    function receiveGameStart(pauseTimerEnd) {
+      setTimerEnd(pauseTimerEnd);
       setGameActive(true);
     }
 
@@ -71,7 +73,7 @@ const Room = ({ socket, name, setName }) => {
         })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>
-        {gameActive ? <GamePlay stopGame={stopGame} /> : <GameSettings socket={socket} startGame={startGame} />}
+        {gameActive ? <GamePlay timerEnd={timerEnd} stopGame={stopGame} /> : <GameSettings socket={socket} startGame={startGame} />}
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name} />

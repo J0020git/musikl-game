@@ -10,6 +10,7 @@ function createGame(roomCode, gamePlaylist, gameSettings) {
     roomCode,
     gamePlaylist,
     playDuration: gameSettings.playDuration,
+    pauseDuration: gameSettings.pauseDuration,
     guessTime: gameSettings.guessTime,
     roundsTotal: gamePlaylist.length,
     round: 1,
@@ -18,7 +19,12 @@ function createGame(roomCode, gamePlaylist, gameSettings) {
   return game
 }
 
+function calculateTimerEnd(duration) {
+  return Date.now() + (duration * 1000)
+}
+
 module.exports = {
   shuffleArray,
   createGame,
+  calculateTimerEnd
 };

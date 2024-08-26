@@ -3,26 +3,23 @@ import Button from "@mui/material/Button";
 
 import { useState, useEffect } from "react";
 
-const GamePlay = () => {
-  const [timerSeconds, setTimerSeconds] = useState(0)
+const GamePlay = ({ timerEnd, stopGame }) => {
+  const [timerSeconds, setTimerSeconds] = useState(null)
 
   useEffect(() => {
-    const everySecond = window.setInterval(() => {
-      setTimerSeconds(s => s + 1);
+    const countdown = window.setInterval(() => {
+      const timeRemainingMs = timerEnd - Date.now()
+      const timeRemainingSec = Math.floor(timeRemainingMs / 1000)
+      setTimerSeconds(timeRemainingSec);
     }, 1000);
 
-    return () => clearInterval(everySecond);
-  }, []);
-
-  const reset = () => {
-    setTimerSeconds(0);
-  }
+    return () => clearInterval(countdown);
+  }, [timerEnd]);
 
   return (
     <Box sx={{ width: "100%", height: "100%" }}>
-      Play Area
-      <p>{timerSeconds}</p>
-      <Button onClick={reset}>Reset</Button>
+      GamePlay
+      {timerSeconds !== null && <h1>{timerSeconds}</h1>}
     </Box>
   );
 };

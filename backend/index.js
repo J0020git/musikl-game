@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const { getPlaylistDetails } = require("./spotify.js");
-const { shuffleArray, createGame } = require("./game.js")
+const { shuffleArray, createGame, calculateTimerEnd } = require("./game.js")
 
 app.use(cors());
 
@@ -125,7 +125,7 @@ io.on("connection", (socket) => {
       shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.roundsMax, shuffledPlaylist.length));
       updateRoomDetails(room, { gameActive: true, gamePlaylist: shuffledPlaylist });
       const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
-      io.to(room).emit("receiveGameStart");
+      io.to(room).emit("receiveGameStart", calculateTimerEnd(game.pauseDuration));
 
       // TO BE REMOVED: System sends game details
       io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(shuffledPlaylist.map((track) => track.name))});
@@ -164,15 +164,16 @@ function roomActivate(roomCode) {
   const room = {
     roomCode,
     playlistDetails: {
-      // playlistId:
-      // name:
-      // description:
-      // img:
-      // tracks: []
+      playlistId: "",
+      name: "",
+      description: "",
+      img: "",
+      tracks: []
     },
     gameActive: false,
     gameSettings: {
       playDuration: 5,
+      pauseDuration: 3,
       guessTime: 5,
       roundsMax: 5,
     },
