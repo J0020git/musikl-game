@@ -23,8 +23,18 @@ function calculateTimerEnd(duration) {
   return Date.now() + (duration * 1000)
 }
 
+function pauseRound(game) {
+  return "pausing";
+}
+
+function playRound(game) {
+  return "playing";
+}
+
 module.exports = {
   shuffleArray,
   createGame,
+  pauseRound,
+  playRound,
   calculateTimerEnd
 };

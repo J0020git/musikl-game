@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 
 const { getPlaylistDetails } = require("./spotify.js");
-const { shuffleArray, createGame, calculateTimerEnd } = require("./game.js")
+const { shuffleArray, createGame, pauseRound, playRound, calculateTimerEnd } = require("./game.js")
 
 app.use(cors());
 
@@ -125,14 +125,34 @@ io.on("connection", (socket) => {
       shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.roundsMax, shuffledPlaylist.length));
       updateRoomDetails(room, { gameActive: true, gamePlaylist: shuffledPlaylist });
       const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
-      io.to(room).emit("receiveGameStart", calculateTimerEnd(game.pauseDuration));
 
       // TO BE REMOVED: System sends game details
-      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(shuffledPlaylist.map((track) => track.name))});
       io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});
+      
+      io.to(room).emit("receiveGameStart", calculateTimerEnd(game.pauseDuration));
+      runGameLoop(game, room);
     }
   });
 });
+
+// Game loop
+function runGameLoop(game, room) {
+  if (game.round > game.roundsTotal) return; 
+
+  setTimeout(() => {
+    io.to(room).emit("receiveMessage", { author: "Playing", message: playRound(game) });
+    
+    setTimeout(() => {
+      io.to(room).emit("receiveMessage", { author: "Pausing", message: pauseRound(game) });
+
+      // Increment the game round and continue the loop
+      game.round++;
+      runGameLoop(game, room);
+
+    }, game.playDuration * 1000);
+    
+  }, game.pauseDuration * 1000);
+}
 
 // User functions
 function userActivate(id, name, room) {
