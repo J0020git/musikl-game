@@ -164,11 +164,11 @@ function roomActivate(roomCode) {
   const room = {
     roomCode,
     playlistDetails: {
-      playlistId: "",
-      name: "",
-      description: "",
-      img: "",
-      tracks: []
+      // playlistId: "",
+      // name: "",
+      // description: "",
+      // img: "",
+      // tracks: []
     },
     gameActive: false,
     gameSettings: {
