@@ -11,7 +11,6 @@ function createGame(roomCode, gamePlaylist, gameSettings) {
     gamePlaylist,
     playDuration: gameSettings.playDuration,
     pauseDuration: gameSettings.pauseDuration,
-    guessTime: gameSettings.guessTime,
     roundsTotal: gamePlaylist.length,
     round: 1,
   }

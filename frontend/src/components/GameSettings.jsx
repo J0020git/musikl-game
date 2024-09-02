@@ -1,4 +1,3 @@
-import Box from "@mui/material/Box";
 import TextField from '@mui/material/TextField';
 import Typography from "@mui/material/Typography";
 import Button from '@mui/material/Button';
@@ -14,7 +13,7 @@ const noPlaylistDetails = {
   tracks: [],
 }
 
-const GameSettings = ({ socket, startGame }) => {
+const GameSettings = ({ socket }) => {
   const [playlist, setPlaylist] = useState("");
   const [currentPlaylist, setCurrentPlaylist] = useState({});
   const [loading, setLoading] = useState(false);
@@ -64,7 +63,7 @@ const GameSettings = ({ socket, startGame }) => {
         <Button variant="contained" disabled={loading} onClick={sendPlaylist}>Set</Button>
       </Stack>
       {JSON.stringify(currentPlaylist) === "{}" ? <PlaylistCard playlistDetails={noPlaylistDetails} /> : <PlaylistCard playlistDetails={currentPlaylist} />}
-      <Button variant="contained" disabled={playButtonDisabled()} onClick={startGame} >Play</Button>
+      <Button variant="contained" disabled={playButtonDisabled()} onClick={() => socket.emit("sendGameStart")} >Play</Button>
     </Stack>
   );
 };

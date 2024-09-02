@@ -123,12 +123,12 @@ io.on("connection", (socket) => {
       let shuffledPlaylist = roomDetails.playlistDetails.tracks.slice(0);
       shuffleArray(shuffledPlaylist);
       shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.roundsMax, shuffledPlaylist.length));
-      updateRoomDetails(room, { gameActive: true, gamePlaylist: shuffledPlaylist });
+      updateRoomDetails(room, { gamePlaylist: shuffledPlaylist });
       const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
 
       // TO BE REMOVED: System sends game details
       // io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});
-      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game.gamePlaylist)});
+      // io.to(room).emit("receiveMessage", { author: "Game Playlist", message: JSON.stringify(game.gamePlaylist)});
 
       io.to(room).emit("receiveGameStart", calculateTimerEnd(game.pauseDuration));
       runGameLoop(game, room);
@@ -185,21 +185,19 @@ function getAllActiveRooms() {
 function roomActivate(roomCode) {
   const room = {
     roomCode,
-    playlistDetails: {
+    playlistDetails: { // The full playlist and it's details
       // playlistId: "",
       // name: "",
       // description: "",
       // img: "",
       // tracks: []
     },
-    gameActive: false,
     gameSettings: {
       playDuration: 5,
       pauseDuration: 3,
-      guessTime: 5,
       roundsMax: 5,
     },
-    gamePlaylist: [],
+    gamePlaylist: [], // The shortened playlist for the game, including only the tracks
   };
   RoomsState.setRooms([
     ...RoomsState.rooms.filter((room) => room.roomCode !== roomCode),

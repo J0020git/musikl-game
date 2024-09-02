@@ -6,7 +6,10 @@ import { styled } from "@mui/system";
 import ContentBox from "../components/ContentBox";
 import Chat from "../components/Chat";
 import GameSettings from "../components/GameSettings";
+import GameStart from "../components/GameStart";
+import GameEnd from "../components/GameEnd";
 import GamePlay from "../components/GamePlay";
+import GamePause from "../components/GamePause";
 import Name from "./Name";
 
 import { useEffect, useState } from "react";
@@ -15,7 +18,7 @@ const Room = ({ socket, name, setName }) => {
   const { roomCode } = useParams();
   const [users, setUsers] = useState([]);
   const [noName, setNoName] = useState(false);
-  const [gameActive, setGameActive] = useState(false);
+  const [gameState, setGameState] = useState("Settings")
   const [timerEnd, setTimerEnd] = useState(0);
 
   useEffect(() => {
@@ -32,10 +35,11 @@ const Room = ({ socket, name, setName }) => {
       setUsers(usersData.users);
     }
     function receiveGameStart(pauseTimerEnd) {
+      setGameState("Start")
       setTimerEnd(pauseTimerEnd);
-      setGameActive(true);
     }
     function receiveGamePlay({ timerEnd: playTimerEnd, playDuration, previewUrl }) {
+      setGameState("Play")
       console.log(playTimerEnd, playDuration, previewUrl);
     }
 
@@ -50,10 +54,22 @@ const Room = ({ socket, name, setName }) => {
     };
   }, [socket]);
 
-  function startGame() {
-    setGameActive(true);
-    socket.emit("sendGameStart")
-  }
+  function renderGameState() {
+    switch (gameState) {
+      case "Settings":
+        return <GameSettings socket={socket} />;
+      case "Start":
+        return <GameStart />
+      case "End":
+        return <GameEnd />
+      case "Play":
+        return <GamePlay timerEnd={timerEnd} />;
+      case "Pause":
+        return <GamePause />;
+      default:
+        return <div>Invalid game state</div>;
+    }
+  };
 
   return (noName ? <Name setName={setName} /> :
     <RoomStack
@@ -74,7 +90,7 @@ const Room = ({ socket, name, setName }) => {
         })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>
-        {gameActive ? <GamePlay timerEnd={timerEnd} /> : <GameSettings socket={socket} startGame={startGame} />}
+        {renderGameState()}
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name} />
