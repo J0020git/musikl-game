@@ -38,19 +38,29 @@ const Room = ({ socket, name, setName }) => {
       setGameState("Start")
       setTimerEnd(pauseTimerEnd);
     }
+    function receiveGameEnd() {
+      setGameState("End")
+    }
     function receiveGamePlay({ timerEnd: playTimerEnd, playDuration, previewUrl }) {
       setGameState("Play")
       console.log(playTimerEnd, playDuration, previewUrl);
     }
+    function receiveGamePause() {
+      setGameState("Pause")
+    }
 
     socket.on("updateUsers", updateUsers);
     socket.on("receiveGameStart", receiveGameStart);
+    socket.on("receiveGameEnd", receiveGameEnd);
     socket.on("receiveGamePlay", receiveGamePlay);
+    socket.on("receiveGamePause", receiveGamePause);
 
     return () => {
       socket.off("updateUsers", updateUsers);
       socket.off("receiveGameStart", receiveGameStart);
+      socket.off("receiveGameEnd", receiveGameEnd);
       socket.off("receiveGamePlay", receiveGamePlay);
+      socket.off("receiveGamePause", receiveGamePause);
     };
   }, [socket]);
 

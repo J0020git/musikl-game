@@ -23,7 +23,7 @@ function calculateTimerEnd(duration) {
 }
 
 function pauseRound(game) {
-  return "pausing";
+  return {};
 }
 
 function playRound(game) {

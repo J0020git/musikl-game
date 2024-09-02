@@ -51,7 +51,7 @@ const GameSettings = ({ socket }) => {
 
   return (
     <Stack direction="column" spacing={1} sx={{ width: "100%", height: "100%" }}>
-      <Typography variant="h6">Game Setup</Typography>
+      <Typography variant="h6">Game Settings</Typography>
 
       <Stack direction="row" spacing={1}>
         <TextField label="Playlist" variant="outlined" size="small" fullWidth

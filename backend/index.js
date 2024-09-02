@@ -138,14 +138,18 @@ io.on("connection", (socket) => {
 
 // Game loop
 function runGameLoop(game, room) {
-  if (game.round > game.roundsTotal) return; 
+  if (game.round > game.roundsTotal) {
+    setTimeout(() => {
+      io.to(room).emit("receiveGameEnd");
+    }, game.pauseDuration * 1000);
+    return;
+  }
 
   setTimeout(() => {
-    io.to(room).emit("receiveMessage", { author: "Playing", message: "PLAYING ROUND PLAYING ROUND" });
     io.to(room).emit("receiveGamePlay", playRound(game));
     
     setTimeout(() => {
-      io.to(room).emit("receiveMessage", { author: "Pausing", message: pauseRound(game) });
+      io.to(room).emit("receiveGamePause", pauseRound(game));
 
       // Increment the game round and continue the loop
       game.round++;
