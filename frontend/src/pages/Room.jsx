@@ -35,23 +35,24 @@ const Room = ({ socket, name, setName }) => {
       setTimerEnd(pauseTimerEnd);
       setGameActive(true);
     }
+    function receiveGamePlay({ timerEnd: playTimerEnd, playDuration, previewUrl }) {
+      console.log(playTimerEnd, playDuration, previewUrl);
+    }
 
     socket.on("updateUsers", updateUsers);
     socket.on("receiveGameStart", receiveGameStart);
+    socket.on("receiveGamePlay", receiveGamePlay);
 
     return () => {
       socket.off("updateUsers", updateUsers);
       socket.off("receiveGameStart", receiveGameStart);
+      socket.off("receiveGamePlay", receiveGamePlay);
     };
   }, [socket]);
 
   function startGame() {
     setGameActive(true);
     socket.emit("sendGameStart")
-  }
-
-  function stopGame() {
-    setGameActive(false)
   }
 
   return (noName ? <Name setName={setName} /> :
@@ -73,7 +74,7 @@ const Room = ({ socket, name, setName }) => {
         })}
       </ContentBox>
       <ContentBox sx={{ width: "44%" }}>
-        {gameActive ? <GamePlay timerEnd={timerEnd} stopGame={stopGame} /> : <GameSettings socket={socket} startGame={startGame} />}
+        {gameActive ? <GamePlay timerEnd={timerEnd} /> : <GameSettings socket={socket} startGame={startGame} />}
       </ContentBox>
       <ContentBox sx={{ width: "28%" }}>
         <Chat socket={socket} name={name} />

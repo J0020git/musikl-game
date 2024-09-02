@@ -28,7 +28,12 @@ function pauseRound(game) {
 }
 
 function playRound(game) {
-  return "playing";
+  const timerEnd = calculateTimerEnd(game.playDuration)
+  return {
+    timerEnd,
+    playDuration: game.playDuration,
+    previewUrl: game.gamePlaylist[game.round - 1].previewUrl
+  };
 }
 
 module.exports = {

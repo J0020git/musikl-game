@@ -127,8 +127,9 @@ io.on("connection", (socket) => {
       const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
 
       // TO BE REMOVED: System sends game details
-      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});
-      
+      // io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});
+      io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game.gamePlaylist)});
+
       io.to(room).emit("receiveGameStart", calculateTimerEnd(game.pauseDuration));
       runGameLoop(game, room);
     }
@@ -140,7 +141,8 @@ function runGameLoop(game, room) {
   if (game.round > game.roundsTotal) return; 
 
   setTimeout(() => {
-    io.to(room).emit("receiveMessage", { author: "Playing", message: playRound(game) });
+    io.to(room).emit("receiveMessage", { author: "Playing", message: "PLAYING ROUND PLAYING ROUND" });
+    io.to(room).emit("receiveGamePlay", playRound(game));
     
     setTimeout(() => {
       io.to(room).emit("receiveMessage", { author: "Pausing", message: pauseRound(game) });
