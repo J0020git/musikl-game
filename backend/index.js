@@ -4,7 +4,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 
-const { getPlaylistDetails } = require("./spotify.js");
+const { getPlaylistDetails, getTrackDetails } = require("./spotify.js");
 const { shuffleArray, createGame, pauseRound, playRound, calculateTimerEnd } = require("./game.js")
 
 app.use(cors());
@@ -115,7 +115,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("sendGameStart", () => {
+  socket.on("sendGameStart", async () => {
     const room = getUser(socket.id)?.room;
     if (room) {
       const roomDetails = getRoom(room);
@@ -123,8 +123,17 @@ io.on("connection", (socket) => {
       let shuffledPlaylist = roomDetails.playlistDetails.tracks.slice(0);
       shuffleArray(shuffledPlaylist);
       shuffledPlaylist = shuffledPlaylist.slice(0, Math.min(roomDetails.gameSettings.roundsMax, shuffledPlaylist.length));
-      updateRoomDetails(room, { gamePlaylist: shuffledPlaylist });
-      const game = createGame(room, shuffledPlaylist, roomDetails.gameSettings);
+
+      // Fetch detailed track data for each track in the playlist
+      const detailedPlaylist = await Promise.all(
+        shuffledPlaylist.map(async (track) => {
+          const trackDetails = await getTrackDetails(track.id);
+          return trackDetails;
+        })
+      );
+      
+      updateRoomDetails(room, { gamePlaylist: detailedPlaylist });
+      const game = createGame(room, detailedPlaylist, roomDetails.gameSettings);
 
       // TO BE REMOVED: System sends game details
       // io.to(room).emit("receiveMessage", { author: "System", message: JSON.stringify(game)});

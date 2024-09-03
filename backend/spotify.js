@@ -65,6 +65,38 @@ async function getPlaylistDetails(playlistId) {
   }
 }
 
+async function getTrackDetails(trackId) {
+  const token = await getAccessToken();
+  const trackUrl = `${baseURL}/tracks/${trackId}`;
+
+  try {
+    const response = await axios.get(trackUrl, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    const trackData = response.data;
+
+    const trackDetails = {
+      trackId: trackData.id,
+      name: trackData.name,
+      artists: trackData.artists.map(artist => artist.name),
+      album: {
+        name: trackData.album.name,
+        img: trackData.album.images[0].url,
+      },
+      previewUrl: trackData.preview_url
+    }
+
+    return trackDetails
+  } catch (error) {
+    console.error("Error getting track details", error.code);
+    throw error;
+  }
+}
+
 module.exports = {
-  getPlaylistDetails
+  getPlaylistDetails,
+  getTrackDetails
 };

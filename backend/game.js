@@ -23,7 +23,12 @@ function calculateTimerEnd(duration) {
 }
 
 function pauseRound(game) {
-  return {};
+  const trackDetails = game.gamePlaylist[game.round - 1]
+  return {
+    name: trackDetails.name,
+    artists: trackDetails.artists,
+    album: trackDetails.album
+  };
 }
 
 function playRound(game) {

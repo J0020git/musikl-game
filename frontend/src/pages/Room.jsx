@@ -18,8 +18,13 @@ const Room = ({ socket, name, setName }) => {
   const { roomCode } = useParams();
   const [users, setUsers] = useState([]);
   const [noName, setNoName] = useState(false);
-  const [gameState, setGameState] = useState("Settings")
+  const [gameState, setGameState] = useState("Settings");
   const [timerEnd, setTimerEnd] = useState(0);
+
+  const [answerImage, setAnswerImage] = useState("");
+  const [answerName, setAnswerName] = useState("");
+  const [answerArtists, setAnswerArtists] = useState([]);
+  const [answerAlbum, setAnswerAlbum] = useState("");
 
   useEffect(() => {
     if (name === "") {
@@ -45,7 +50,11 @@ const Room = ({ socket, name, setName }) => {
       setGameState("Play")
       console.log(playTimerEnd, playDuration, previewUrl);
     }
-    function receiveGamePause() {
+    function receiveGamePause({ name, artists, album }) {
+      setAnswerImage(album.img);
+      setAnswerName(name);
+      setAnswerArtists(artists);
+      setAnswerAlbum(album.name);
       setGameState("Pause")
     }
 
@@ -75,7 +84,7 @@ const Room = ({ socket, name, setName }) => {
       case "Play":
         return <GamePlay timerEnd={timerEnd} />;
       case "Pause":
-        return <GamePause />;
+        return <GamePause img={answerImage} name={answerName} artists={answerArtists} album={answerAlbum} />;
       default:
         return <div>Invalid game state</div>;
     }
